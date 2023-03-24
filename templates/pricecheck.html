@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>price check</title>
+
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fontawesome-all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/slick-slider.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fancybox.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/smartmenus.css">
+    <link rel="stylesheet" href="/static/bootstrap/style.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/color.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/responsive.css">
+
+
+    <style>
+        body {
+            background-image: url("/static/images/wallpaper.jpg");
+            color: white;
+            background-size: cover;
+            font-family: 'Poppins', sans-serif;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">Pokemon</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Blind Box<b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/mainpage/">Best sellers </a></li>
+                            <li class="divider"></li>
+                            <li><a href="/boxhistory/">Order history</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-toggle"><a href="/mypokemon/">My Pokemon</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            Resale Card <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a href="/resalepage/">Find what you like</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/resalehistory/"> Resale history</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/pricecheck/"> Check the price</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a><span
+                                class="glyphicon glyphicon-user"></span> {{request.session.username}}</a>
+                    </li>
+                    <li class=" navbar-right">
+                        <a href="/logout/"><span
+                                class="fa fa-sign-in-alt"></span> logout</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="width: 1500px; height: auto;background:rgb(230,230,230,0.9);border: 1px solid #ccc;
+	position:absolute;left: 10%;top: 1%;margin-left: 5%;margin-top: 5%;margin-bottom: 5%; margin-right: 5%;">
+        <section class="page-title-area " style="padding-top: 60px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="page-title" style="color: black;font-size: 50px; ">Check price</h1>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="main-content-wrapper" style="color: black">
+            <div class="shop-page-wrapper ptb--80">
+                <div class="container">
+
+                    <div class="row" style="margin-top:50px;">
+
+                        <form class="login100-form validate-form" method="post" action="/checkavg/">
+
+                            {% csrf_token %}
+
+                            <div class="wrap-input100 validate-input" data-validate="card type is required">
+                                Choose one card type
+                                <select name='cardtype'>
+                                    <option selected="selected">Choose one type</option>
+                                    <option value="Fire">Fire</option>
+                                    <option value="Water">Water</option>
+                                    <option value="Grass">Grass</option>
+                                    <option value="Darkness">Darkness</option>
+                                    <option value="Psychic">Psychic</option>
+                                    <option value="Colorless">Colorless</option>
+                                    <option value="Lightning">Lightning</option>
+                                    <option value="Fighting">Fighting</option>
+                                    <option value="Dragon">Dragon</option>
+                                    <option value="Metal">Metal</option>
+                                    <option value="Fairy">Fairy</option>
+                                </select>
+                            </div>
+                            <div class="wrap-input100 validate-input" data-validate="card rarity is required">
+                                Choose one card rarity
+                                <select name='cardrarity'>
+                                    <option selected="selected">Choose one rarity</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div>Input a minimum price</div>
+                                <input class="input100" type="text" name="minprice" placeholder="Min price">
+                            </div>
+                            <div>
+                                <div> Input a maxmium price</div>
+                                <input class="input100" type="text" name="maxprice" placeholder="Max price">
+                            </div>
+
+                            <div class="container-login100-form-btn">
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    show average price
+                                </button>
+                            </div>
+                        </form>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>cardNO</th>
+                                <th>card name</th>
+                                <th>type</th>
+                                <th>rarity</th>
+                                <th>average trade price</th>
+                                <th>trade times</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for avgprice in avgpricelist %}
+                            <tr>
+                                <td>{{avgprice.0}}</td>
+                                <td>{{avgprice.1}}</td>
+                                <td>{{avgprice.2}}</td>
+                                <td>{{avgprice.3}}</td>
+                                <td>{{avgprice.4}}</td>
+                                <td>{{avgprice.5}}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/bootstrap/js/jquery.js"></script>
+<script src="/static/js/main.js"></script>
+
+<script href="js/bootstrap.js"></script>
+<script href="js/npm.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap/js/popper.min.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>Resale history</title>
+
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fontawesome-all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/slick-slider.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fancybox.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/smartmenus.css">
+    <link rel="stylesheet" href="/static/bootstrap/style.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/color.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/responsive.css">
+    <link rel="stylesheet" href="/static/css/index.css" rel="external nofollow">
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+
+    <style>
+        body {
+            background-image: url("/static/images/wallpaper.jpg");
+            background-size: cover;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">Pokemon</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Blind Box<b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/mainpage/">Best sellers </a></li>
+                            <li class="divider"></li>
+                            <li><a href="/boxhistory/">Order history</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-toggle"><a href="/mypokemon/">My Pokemon</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            Resale Card <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a href="/resalepage/">Find what you like</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/resalehistory/"> Resale history</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/pricecheck/"> Check the price</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a><span
+                                class="glyphicon glyphicon-user"></span> {{request.session.username}}</a>
+                    </li>
+                    <li class=" navbar-right">
+                        <a href="/logout/"><span
+                                class="fa fa-sign-in-alt"></span> logout</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="width: 1500px; height: auto;background:rgb(230,230,230,0.9);border: 1px solid #ccc;
+	position:absolute;left: 10%;top: 1%;margin-left: 5%;margin-top: 5%;margin-bottom: 5%; margin-right: 5%;">
+        <section class="page-title-area " style="padding-top: 60px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="page-title" style="color: black;font-size: 50px; ">On sale Card</h1>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="main-content-wrapper" style="color: black">
+            <div class="shop-page-wrapper ptb--80">
+                <div class="container">
+
+                    <div class="row" style="margin-top:50px;">
+                        <div class="col-xl-3 col-lg-4 order-lg-1">
+                            <aside class="shop-sidebar">
+                                <div class="shop-widget mb--40">
+
+                                    <h3 class="widget-title mb--25">Category</h3>
+                                    <form method="POST" action="/checkresalecard/">
+                                        {% csrf_token %}
+
+                                        choose rarity
+                                        <select id="rarityfilter" name="rarityfilter" onchange="raritychange()">
+                                            <option value="allrarity">ALL</option>
+                                            <option value="choose">CHOOSE ONE OR MORE</option>
+                                        </select>
+                                        <div id="chooserarity" style="display: none;">
+                                            <input type="checkbox" name="type" value="A"/>A
+                                            <input type="checkbox" name="type" value="B"/>B
+                                            <input type="checkbox" name="type" value="C"/>C
+                                            <input type="checkbox" name="type" value="D"/>D
+                                        </div>
+                                        <div class="wrap-input100 validate-input" data-validate="">
+                                            <div>Input a minimum price</div>
+                                            <input class="input100" type="text" name="minprice" placeholder="Min price">
+                                        </div>
+                                        <div class="wrap-input100 validate-input" data-validate="">
+                                            <div> Input a maxmium price</div>
+                                            <input class="input100" type="text" name="maxprice" placeholder="Max price">
+                                        </div>
+
+
+                                        <button type="submit" class="btn btn-primary btn-lg">filter</button>
+                                    </form>
+
+                                </div>
+
+                            </aside>
+                        </div>
+                        <div class="col-xl-9 col-lg-8 order-lg-2 mb-md--50">
+                            <div class="shop-toolbar mb--50">
+                                <div class="row align-items-center">
+                                    <div class="col-md-5 mb-sm--30 mb-xs--10">
+                                        <form class="navbar-form" role="search" method="POST"
+                                              action="/searchresalecard/">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <input type="text" class=" form-control input-lg" name="keyword"
+                                                       placeholder="Keyword">
+                                            </div>
+                                            <button type="submit" class="btn btn-default">search</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="shop-products">
+
+                                {% for resalecard in resalecardlist %}
+                                <div class="row" style="margin-top:30px;margin-bottom: 30px; " class={{resalecard.1}}>
+                                    <div class="col-md-6">
+                                        <img src={{resalecard.7}} alt="Product">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h3 class="product__title">
+                                            <a>{{resalecard.6}}</a>
+                                        </h3>
+                                        <span class="money">{{resalecard.4}}</span>
+                                        <span class="sign">$</span>
+                                        <h6> Rarity:{{resalecard.5}}</h6>
+                                        <h6> Type:{{resalecard.8}}</h6>
+                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                                onclick="showpricetrend({{resalecard.1}})">price trend
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                                data-target=#{{resalecard.1}}>Purchase
+                                        </button>
+
+
+                                        <!-- buy one card modal window -->
+                                        <div class="modal fade " id={{resalecard.1}} tabindex="-1" role="dialog"
+                                             aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">
+
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            Do you want to buy it?
+                                                        </h4>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal" onclick="">No
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-primary" data-dismiss="modal"
+                                                                onclick="buyonecard({{resalecard.1}})">
+                                                            yes
+                                                        </button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal -->
+                                        </div>
+
+                                        <!-- check price trend modal window -->
+                                        <div class="modal fade " id="trend{{resalecard.1}}" tabindex="-1" role="dialog"
+                                             aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">
+                                                        </button>
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            {{resalecard.6}} price trend in the last 10 transactions
+                                                        </h4>
+                                                    </div>
+                                                    <div id="pricechart{{resalecard.1}}"
+                                                         style="width:490px; height:400px"></div>
+                                                    <div class="modal-body">
+                                                        <table id='pricetrend{{resalecard.1}}'
+                                                               class="table table-striped">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>trade day</th>
+                                                                <th>trade amount</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default"
+                                                                data-dismiss="modal" onclick="">Close
+                                                        </button>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal -->
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<script>
+    function raritychange() {
+        var rarityfilter = document.getElementById("rarityfilter").value;
+        var chooserarity = document.getElementById("chooserarity");
+        if (rarityfilter == 'choose') {
+
+            chooserarity.style.display = "";
+        } else {
+            chooserarity.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    function buyonecard(thisone) {
+        var cardID = thisone;
+        $.ajax({
+            url: "/buyonecard/",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                cardID: cardID,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (id) {
+                window.alert('Purchase successfully!!');
+                window.location.reload();
+                // window.locatio)
+                // n = '/resalepage/'
+            }
+        })
+    }
+</script>
+
+
+<script type="text/javascript">
+    function showpricetrend(thisone) {
+        var cardID = thisone;
+
+        $.ajax({
+            url: "/showpricetrend/",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                cardID: cardID,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (pricetrendresult) {
+                console.log("yews")
+                var trendresult = eval(pricetrendresult);
+                var myChart = echarts.init(document.getElementById('pricechart' + cardID));
+                var tradedate = []
+                var tradeamount = []
+                console.log(trendresult.length)
+                console.log("yews")
+                for (var i = 0; i < trendresult.length; i++) {
+                    tradedate.push(trendresult[i][0])
+                    tradeamount.push(trendresult[i][1])
+                }
+                console.log(tradedate)
+                var option = {
+                    title: {
+                        text: 'Price trend',
+                        x: 'center'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['price'],
+                        x: 'right'
+                    },
+                    xAxis: {
+                        data: tradedate
+                    },
+                    yAxis: {},
+
+                    series: [{
+                        name: 'price',
+                        type: 'line',
+                        data: tradeamount,
+                        markLine: {
+
+                            data: [
+                                {type: 'average', name: 'average price'}
+                            ]
+                        }
+                    }]
+                };
+                myChart.setOption(option);
+                $(("#pricetrend" + cardID + " tbody")).html("");
+                for (var i = 0; i < trendresult.length; i++) {
+                    $("tbody").append("<tr>"
+                        + "<td>" + trendresult[i][0] + "</td>"
+                        + "<td>" + trendresult[i][1] + "</td>"
+                        + "</tr>");
+                }
+                $(('#trend' + cardID)).modal('show');
+
+                // 使用刚指定的配置项和数据显示图表。
+
+            }
+        })
+    }
+</script>
+
+
+<script src="/static/bootstrap/js/jquery.js"></script>
+<script src="/static/js/main.js"></script>
+
+<script href="js/bootstrap.js"></script>
+<script href="js/npm.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap/js/popper.min.js"></script>
+
+
+</body>
+</html>

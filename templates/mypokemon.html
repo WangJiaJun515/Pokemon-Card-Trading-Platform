@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <title>my pokemon</title>
+
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fontawesome-all.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/slick-slider.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/fancybox.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/smartmenus.css">
+    <link rel="stylesheet" href="/static/bootstrap/style.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/color.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/responsive.css">
+
+
+    <style>
+        body {
+            background-image: url("/static/images/wallpaper.jpg");
+            background-size: cover;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">Pokemon</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Blind Box<b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/mainpage/">Best sellers </a></li>
+                            <li class="divider"></li>
+                            <li><a href="/boxhistory/">Order history</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="dropdown-toggle">My Pokemon</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">
+                            Resale Card <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a href="/resalepage/">Find what you like</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/resalehistory/"> Resale history</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/pricecheck/"> Check the price</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a><span
+                                class="glyphicon glyphicon-user"></span> {{request.session.username}}</a>
+                    </li>
+                    <li class=" navbar-right">
+                        <a href="/logout/"><span
+                                class="fa fa-sign-in-alt"></span> logout</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="width: 1500px; height: auto;background:rgb(230,230,230,0.9);border: 1px solid #ccc;
+	position:absolute;left: 10%;top: 1%;margin-left: 5%;margin-top: 5%;margin-bottom: 5%; margin-right: 5%;">
+        <section class="page-title-area " style="padding-top: 60px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h1 class="page-title" style="color: black;font-size: 50px; ">My pokemon card </h1>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="main-content-wrapper" style="color: black">
+            <div class="shop-page-wrapper ptb--80">
+                <div class="container">
+
+                    <div class="row" style="margin-top:50px;">
+                        <div class="col-xl-3 col-lg-4 order-lg-1">
+                            <aside class="shop-sidebar">
+                                <div class="shop-widget mb--40">
+
+                                    <h3 class="widget-title mb--25">Category</h3>
+                                    <form method="POST" action="/checkmycard/">
+                                        {% csrf_token %}
+
+                                        choose rarity
+                                        <select id="rarityfilter" name="rarityfilter" onchange="raritychange()">
+                                            <option value="allrarity">ALL</option>
+                                            <option value="choose">CHOOSE ONE OR MORE</option>
+                                        </select>
+                                        <div id="chooserarity" style="display: none;">
+                                            <input type="checkbox" name="rarity" value="A"/>A
+                                            <input type="checkbox" name="rarity" value="B"/>B
+                                            <input type="checkbox" name="rarity" value="C"/>C
+                                            <input type="checkbox" name="rarity" value="D"/>D
+                                        </div>
+
+                                        choose card type
+                                        <select id="typefilter" name="typefilter" onchange="typechange()">
+                                            <option value="alltypes">ALL</option>
+                                            <option value="choose">CHOOSE ONE OR MORE</option>
+                                        </select>
+                                        <div id="choosetype" style="display: none;">
+                                            <input type="checkbox" name="type" value="Fire"/>Fire
+                                            <input type="checkbox" name="type" value="Water"/>Water
+                                            <input type="checkbox" name="type" value="Grass"/>Grass
+                                            <input type="checkbox" name="type" value="Darkness"/>Darkness
+                                            <input type="checkbox" name="type" value="Psychic"/>Psychic
+                                            <input type="checkbox" name="type" value="Colorless"/>Colorless
+                                            <input type="checkbox" name="type" value="Lightning"/>Lightning
+                                            <input type="checkbox" name="type" value="Fighting"/>Fighting
+                                            <input type="checkbox" name="type" value="Dragon"/>Dragon
+                                            <input type="checkbox" name="type" value="Metal"/>Metal
+                                            <input type="checkbox" name="type" value="Fairy"/>Fairy
+                                        </div>
+
+                                        choose status
+                                        <select id="statusfilter1" name="statusfilter1" onchange="statusfilter()">
+                                            <option value="allstatus">ALL</option>
+                                            <option value="choose">CHOOSE ONE OR MORE</option>
+                                        </select>
+                                        <div id="choosestatus" style="display: none;">
+                                            <input type="checkbox" name="status" value="owned"/>Owned
+                                            <input type="checkbox" name="status" value="selling"/>Selling
+                                            <input type="checkbox" name="status" value="bonus"/>Bonus
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg">filter</button>
+                                    </form>
+                                </div>
+
+                            </aside>
+                        </div>
+                        <div class="col-xl-9 col-lg-8 order-lg-2 mb-md--50">
+                            <div class="shop-toolbar mb--50">
+                                <div class="row align-items-center">
+                                    <div class="col-md-5 mb-sm--30 mb-xs--10">
+                                        <form class="navbar-form" role="search" method="POST" action="/searchcard/">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <input type="text" class=" form-control input-lg" name="keyword"
+                                                       placeholder="Keyword">
+                                            </div>
+                                            <button type="submit" class="btn btn-default">search</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="shop-products">
+                                {% for card in cardlist %}
+                                <div class="row" style="margin-top:30px;margin-bottom: 30px; ">
+                                    <div class="col-md-6">
+                                        <img src={{card.2}} alt="Product">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h1 style="color: orangered">
+                                            {{card.0}}
+                                        </h1>
+                                        <h2 style="color: darkred">
+                                            rarity : {{card.1}}
+                                        </h2>
+                                        <h3>
+                                            card type:{{card.3}}
+                                        </h3>
+                                        <h3>
+                                            status:{{card.4}}
+                                        </h3>
+                                        <h6></h6>
+                                        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                                                data-target=#{{card.5}}>Modify status
+                                        </button>
+                                        <!-- Modal window: modify status -->
+                                        <div class="modal fade " id={{card.5}} tabindex="-1" role="dialog"
+                                             aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">
+
+                                                        </button>
+                                                        <h4 class="modal-title">
+                                                            Now status:{{card.4}}</h4>
+                                                        <h4 class="modal-title">Change the card's status?
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="post" action="/modifycard/">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" id="cardID{{card.5}}" name="cardID"
+                                                                   value="{{card.5}}">
+                                                            <select id="status{{card.5}}" name='status'
+                                                                    onchange="statuschange({{card.5}})">
+                                                                <option selected="selected">Choose one status</option>
+                                                                <option value="owned">owned</option>
+                                                                <option value="selling">selling</option>
+                                                            </select>
+                                                            <div id="enterprice{{card.5}}"
+                                                                 data-validate="Price is required"
+                                                                 style="display: none;">
+                                                                <input name='price'
+                                                                       placeholder="Set the selling price">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit"
+                                                                        class="btn btn-primary">
+                                                                    Change
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal -->
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<script>
+    function raritychange() {
+        var rarityfilter = document.getElementById("rarityfilter").value;
+        var chooserarity = document.getElementById("chooserarity");
+        if (rarityfilter == 'choose') {
+
+            chooserarity.style.display = "";
+        } else {
+            chooserarity.style.display = "none";
+        }
+    }
+</script>
+
+
+<script>
+    function typechange() {
+        var typefilter = document.getElementById("typefilter").value;
+        var choosetype = document.getElementById("choosetype");
+        if (typefilter == 'choose') {
+            choosetype.style.display = "";
+        } else {
+            choosetype.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    function statusfilter() {
+        var status = document.getElementById("statusfilter1").value;
+        var choosestatus = document.getElementById("choosestatus");
+        if (status == 'choose') {
+            choosestatus.style.display = "";
+        } else {
+            choosestatus.style.display = "none";
+        }
+    }
+</script>
+
+
+<script>
+    function statuschange(thisone) {
+        var cardID = thisone
+        var status = document.getElementById("status" + cardID).value;
+        var enterprice = document.getElementById("enterprice" + cardID);
+        console.log('the status is' + status)
+
+        if (status == 'selling') {
+
+            enterprice.style.display = "";
+        } else {
+            enterprice.style.display = "none";
+        }
+    }
+</script>
+
+
+<script src="/static/bootstrap/js/jquery.js"></script>
+<script src="/static/js/main.js"></script>
+
+<script href="js/bootstrap.js"></script>
+<script href="js/npm.js"></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/bootstrap/js/popper.min.js"></script>
+
+
+</body>
+</html>
